@@ -2,7 +2,7 @@
 
 > A premium, modern, and production-ready weather application built with React.js using the Open-Meteo API.
 >
-> **Live Demo:** [https://mahadevswamy06.github.io/weather-app/](https://mahadevswamy06.github.io/weather-app/)
+> ## 🌐 **Live Demo:** [Click Here to View App](https://mahadevswamy06.github.io/weather-app/)
 
 ## 🚀 Features
 
