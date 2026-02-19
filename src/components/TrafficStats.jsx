@@ -12,7 +12,8 @@ const TrafficStats = () => {
         if (!storedVisits) {
             storedVisits = 1200; // Start with a fake "base" number so it looks popular!
         } else {
-            storedVisits = parseInt(storedVisits) + 1;
+            const parsedVisits = parseInt(storedVisits);
+            storedVisits = isNaN(parsedVisits) ? 1200 : parsedVisits + 1;
         }
 
         localStorage.setItem('weatherApp_visits', storedVisits);

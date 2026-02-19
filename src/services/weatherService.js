@@ -64,7 +64,7 @@ export const fetchHistory = async (lat, lon) => {
 };
 
 // Helper to map WMO codes to OWM-like structure (For Open-Meteo fallback)
-const mapWeatherCode = (code, isDay = 1) => {
+function mapWeatherCode(code, isDay = 1) {
     const codes = {
         0: { description: 'Clear sky', icon: isDay ? '01d' : '01n', main: 'Clear' },
         1: { description: 'Mainly clear', icon: isDay ? '02d' : '02n', main: 'Clouds' },
@@ -75,6 +75,7 @@ const mapWeatherCode = (code, isDay = 1) => {
         51: { description: 'Light drizzle', icon: '09d', main: 'Drizzle' },
         53: { description: 'Moderate drizzle', icon: '09d', main: 'Drizzle' },
         55: { description: 'Dense drizzle', icon: '09d', main: 'Drizzle' },
+        78: { description: 'Slight rain', icon: '10d', main: 'Rain' },
         61: { description: 'Slight rain', icon: '10d', main: 'Rain' },
         63: { description: 'Moderate rain', icon: '10d', main: 'Rain' },
         65: { description: 'Heavy rain', icon: '10d', main: 'Rain' },
@@ -84,12 +85,16 @@ const mapWeatherCode = (code, isDay = 1) => {
         80: { description: 'Slight rain showers', icon: '09d', main: 'Rain' },
         81: { description: 'Moderate rain showers', icon: '09d', main: 'Rain' },
         82: { description: 'Violent rain showers', icon: '09d', main: 'Rain' },
+        87: { description: 'Thunderstorm', icon: '11d', main: 'Thunderstorm' },
         95: { description: 'Thunderstorm', icon: '11d', main: 'Thunderstorm' },
+        88: { description: 'Thunderstorm with slight hail', icon: '11d', main: 'Thunderstorm' },
         96: { description: 'Thunderstorm with slight hail', icon: '11d', main: 'Thunderstorm' },
+        89: { description: 'Thunderstorm with heavy hail', icon: '11d', main: 'Thunderstorm' },
         99: { description: 'Thunderstorm with heavy hail', icon: '11d', main: 'Thunderstorm' },
+        90: { description: 'Unknown', icon: '50d', main: 'Unknown' },
     };
     return codes[code] || { description: 'Unknown', icon: '50d', main: 'Unknown' };
-};
+}
 
 const getLatLon = async (city) => {
     if (API_KEY) {
@@ -116,7 +121,7 @@ const getLatLon = async (city) => {
     }
 };
 
-const getLatLonOpenMeteo = async (city) => {
+async function getLatLonOpenMeteo(city) {
     const response = await axios.get(GEOCODING_URL, {
         params: { name: city, count: 1, language: 'en', format: 'json' }
     });
@@ -124,7 +129,7 @@ const getLatLonOpenMeteo = async (city) => {
         throw { response: { status: 404 } };
     }
     return response.data.results[0];
-};
+}
 
 export const searchCities = async (query) => {
     if (!query || query.length < 2) return [];
@@ -225,7 +230,7 @@ export const fetchWeatherByCoords = async (lat, lon, cityName = null, country = 
     }
 };
 
-const fetchWeatherByCoordsOpenMeteo = async (lat, lon, cityName, country) => {
+async function fetchWeatherByCoordsOpenMeteo(lat, lon, cityName, country) {
     const weatherReq = axios.get(WEATHER_URL, {
         params: {
             latitude: lat,
@@ -279,7 +284,7 @@ const fetchWeatherByCoordsOpenMeteo = async (lat, lon, cityName, country) => {
             speed: current.wind_speed_10m
         }
     };
-};
+}
 
 export const fetchForecastByCoords = async (lat, lon) => {
     if (API_KEY) {
@@ -350,7 +355,7 @@ export const fetchForecastByCoords = async (lat, lon) => {
     }
 };
 
-const fetchForecastByCoordsOpenMeteo = async (lat, lon) => {
+async function fetchForecastByCoordsOpenMeteo(lat, lon) {
     const weatherReq = axios.get(WEATHER_URL, {
         params: {
             latitude: lat,
@@ -406,4 +411,4 @@ const fetchForecastByCoordsOpenMeteo = async (lat, lon) => {
     }
 
     return { list };
-};
+}

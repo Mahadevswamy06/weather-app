@@ -164,7 +164,7 @@ function App() {
 
     // Dynamic Background based on weather condition
     const getBackgroundClass = () => {
-        if (!weatherData) return 'app-default';
+        if (!weatherData || !weatherData.weather || weatherData.weather.length === 0) return 'app-default';
         const main = weatherData.weather[0].main.toLowerCase();
         if (main.includes('cloud')) return 'app-cloudy';
         if (main.includes('rain') || main.includes('drizzle')) return 'app-rainy';

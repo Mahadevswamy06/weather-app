@@ -105,12 +105,10 @@ const TemperatureChart = ({ data, history, isDarkMode }) => {
     const options = {
         responsive: true,
         animation: {
-            duration: 1500,
-            easing: 'customBounce', // We can't define custom easings easily here, stick to standard or simple
+            duration: 1000,
+            easing: 'easeOutQuart',
             y: {
-                from: 500 // Drop from top effect
-            },
-            x: {
+                type: 'number',
                 duration: 1000
             }
         },
