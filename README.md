@@ -30,8 +30,8 @@ This project uses the **Open-Meteo API** for weather data.
 
 1.  **Clone the repository**:
     ```bash
-    git clone <repository-url>
-    cd neon-nadir
+    git clone https://github.com/Mahadevswamy06/weather-app.git
+    cd weather-app
     ```
 
 2.  **Install dependencies**:

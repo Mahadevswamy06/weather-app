@@ -54,7 +54,7 @@ const SearchBar = ({ onSearch }) => {
     };
 
     const handleSuggestionClick = (suggestion) => {
-        onSearch(suggestion.name);
+        onSearch(suggestion);
         setCity('');
         setShowSuggestions(false);
     };
@@ -100,7 +100,7 @@ const SearchBar = ({ onSearch }) => {
                                 <span className="suggestion-flag">{getFlagEmoji(item.country_code)}</span>
                             </div>
                             <div className="suggestion-detail">
-                                {item.admin1 ? `${item.admin1}, ` : ''}{item.country}
+                                {(item.state || item.admin1) ? `${item.state || item.admin1}, ` : ''}{item.country}
                             </div>
                         </li>
                     ))}

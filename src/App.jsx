@@ -18,7 +18,7 @@ import Clock from './components/Clock';
 import Footer from './components/Footer';
 import TrafficStats from './components/TrafficStats';
 import TemperatureChart from './components/TemperatureChart';
-import { fetchWeather, fetchForecast, fetchWeatherByCoords, fetchForecastByCoords, fetchHistory } from './services/weatherService';
+import { fetchWeather, fetchForecast, fetchWeatherByCoords, fetchForecastByCoords, fetchHistory, searchCities } from './services/weatherService';
 
 ChartJS.register(
     CategoryScale,
@@ -99,17 +99,20 @@ function App() {
         loadDefaultWeather();
     }, []);
 
-    const loadCityWeather = async (cityName) => {
+    const loadCityWeather = async (searchInput) => {
         setLoading(true);
         setError(null);
         try {
-            // First find coordinates
-            const results = await import('./services/weatherService').then(m => m.searchCities(cityName));
-
             let weather, forecast, history;
-            if (results && results.length > 0) {
-                const { latitude, longitude, name, country } = results[0];
-                weather = await fetchWeatherByCoords(latitude, longitude, name, country);
+
+            if (typeof searchInput === 'object' && searchInput.latitude && searchInput.longitude) {
+                // Direct location object from search suggestion
+                const { latitude, longitude, name, country, state, admin1 } = searchInput;
+                // Format: City, State/Region, Country
+                const region = state || admin1;
+                const displayName = `${name}${region ? `, ${region}` : ''}`;
+
+                weather = await fetchWeatherByCoords(latitude, longitude, displayName, country);
                 forecast = await fetchForecastByCoords(latitude, longitude);
                 try {
                     history = await fetchHistory(latitude, longitude);
@@ -117,7 +120,25 @@ function App() {
                     console.warn("History failed:", e);
                 }
             } else {
-                throw { response: { status: 404 } }; // Mimic not found
+                // String search fallback
+                const cityName = typeof searchInput === 'string' ? searchInput : '';
+                const results = await searchCities(cityName);
+
+                if (results && results.length > 0) {
+                    const { latitude, longitude, name, country, state, admin1 } = results[0];
+                    const region = state || admin1;
+                    const displayName = `${name}${region ? `, ${region}` : ''}`;
+
+                    weather = await fetchWeatherByCoords(latitude, longitude, displayName, country);
+                    forecast = await fetchForecastByCoords(latitude, longitude);
+                    try {
+                        history = await fetchHistory(latitude, longitude);
+                    } catch (e) {
+                        console.warn("History failed:", e);
+                    }
+                } else {
+                    throw { response: { status: 404 } }; // Mimic not found
+                }
             }
 
             setWeatherData(weather);
